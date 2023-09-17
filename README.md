@@ -1,5 +1,6 @@
 # godot-doubles
 A few bash scripts to build Godot with doubles, usable on ubuntu.
+Also includes mono.
 
 ## Usage
 Clone this repo and run `setup.sh` to setup, works fine inside codespaces.
