@@ -1,2 +1,4 @@
-godot.gdkey
+*.gdkey
 godot/
+cmdline-tools/
+*.zip
