@@ -1,21 +1,33 @@
 export SCRIPT_AES256_ENCRYPTION_KEY=$(cat godot.gdkey)
 
 oldPWD=$PWD
-cd $PWD/godot
+godotDir=$PWD/godot
+cd $godotDir
 
-scons platform=linuxbsd target=editor arch=x86_64 module_mono_enabled=yes lto=full production=yes
-scons platform=windows target=editor arch=x86_64 module_mono_enabled=yes lto=full production=yes
+echo "1" | sudo update-alternatives --config x86_64-w64-mingw32-g++ # patch for compiling windows from ubuntu
 
-scons platform=linuxbsd target=template_release arch=x86_64 module_mono_enabled=yes lto=full production=yes
-scons platform=linuxbsd target=template_debug arch=x86_64 module_mono_enabled=yes lto=full production=yes
+scons platform=linuxbsd target=editor arch=x86_64 module_mono_enabled=yes lto=full production=yes optimize=speed
+scons platform=windows target=editor arch=x86_64 module_mono_enabled=yes lto=full production=yes optimize=speed
 
-scons platform=windows target=template_release arch=x86_64 module_mono_enabled=yes lto=full production=yes
-scons platform=windows target=template_debug arch=x86_64 module_mono_enabled=yes lto=full production=yes
+scons platform=linuxbsd target=template_release arch=x86_64 module_mono_enabled=yes lto=full production=yes optimize=speed
+scons platform=linuxbsd target=template_debug arch=x86_64 module_mono_enabled=yes lto=full production=yes optimize=speed
 
-scons platform=android target=template_release arch=arm64 module_mono_enabled=yes debug_symbols=no lto=full production=yes
-scons platform=android target=template_release arch=x86_64 module_mono_enabled=yes debug_symbols=no lto=full production=yes generate_apk=yes
-scons platform=android target=template_debug arch=arm64 module_mono_enabled=yes debug_symbols=no lto=full production=yes
-scons platform=android target=template_debug arch=x86_64 module_mono_enabled=yes debug_symbols=no lto=full production=yes generate_apk=yes
+scons platform=windows target=template_release arch=x86_64 module_mono_enabled=yes lto=full production=yes optimize=speed
+scons platform=windows target=template_debug arch=x86_64 module_mono_enabled=yes lto=full production=yes optimize=speed
+
+scons platform=android target=template_release arch=arm64 module_mono_enabled=yes lto=full production=yes optimize=speed
+scons platform=android target=template_release arch=x86_64 module_mono_enabled=yes lto=full production=yes optimize=speed
+cd $godotDir/platform/android/java
+./gradlew generateGodotTemplates
+./gradlew clean
+cd $godotDir
+
+scons platform=android target=template_debug arch=arm64 module_mono_enabled=yes lto=full production=yes optimize=speed
+scons platform=android target=template_debug arch=x86_64 module_mono_enabled=yes lto=full production=yes optimize=speed
+cd $godotDir/platform/android/java
+./gradlew generateGodotTemplates
+./gradlew clean
+cd $godotDir
 
 strip bin/*
 
