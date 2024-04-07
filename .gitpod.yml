@@ -1,0 +1,5 @@
+tasks:
+  - name: Install & Setup Dependencies
+    init: chmod +x ./setup.sh
+    command: yes | bash ./setup.sh
+    
